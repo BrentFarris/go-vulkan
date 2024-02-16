@@ -53,30 +53,6 @@ func ToString(buf []byte) string {
 	return str.String()
 }
 
-// deprecated
-func FindMemoryTypeIndex(dev PhysicalDevice,
-	typeBits uint32, reqMask MemoryPropertyFlagBits) (uint32, bool) {
-
-	var memProperties PhysicalDeviceMemoryProperties
-	GetPhysicalDeviceMemoryProperties(dev, &memProperties)
-	memProperties.Deref()
-
-	var memFlags = MemoryPropertyFlags(reqMask)
-
-	// search memtypes to find the first index with those requirements
-	for i := 0; i < 32; i++ {
-		if typeBits&1 == 1 { // type is available
-			memType := memProperties.MemoryTypes[i]
-			memType.Deref()
-			if memType.PropertyFlags&memFlags == memFlags {
-				return uint32(i), true
-			}
-		}
-		typeBits = typeBits >> 1
-	}
-	return 0, false
-}
-
 // Memcopy is like a Go's built-in copy function, it copies data from src slice,
 // but into a destination pointer. Useful to copy data into device memory.
 func Memcopy(dst unsafe.Pointer, src []byte) int {

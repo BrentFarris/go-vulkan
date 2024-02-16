@@ -11,7 +11,6 @@ package vulkan
 #include "vk_wrapper.h"
 #include "vk_bridge.h"
 #include <stdlib.h>
-#include "cgo_helpers.h"
 */
 import "C"
 

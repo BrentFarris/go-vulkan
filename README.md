@@ -71,7 +71,7 @@ Usage of this project is straightforward due to the stateless nature of Vulkan A
 Just import the package like this:
 
 ```
-import vk "github.com/BrentFarris/go-vulkan"
+import vk "github.com/KaijuEngine/go-vulkan"
 ```
 
 Set the GetProcAddress pointer (used to look up Vulkan functions) using SetGetInstanceProcAddr or SetDefaultGetInstanceProcAddr. After that you can call Init to initialise the library. For example:

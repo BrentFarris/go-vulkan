@@ -12,7 +12,6 @@ package vulkan
 #include "vulkan/vulkan.h"
 #include "vk_wrapper.h"
 #include "vk_bridge.h"
-#include "cgo_helpers.h"
 */
 import "C"
 import "unsafe"
