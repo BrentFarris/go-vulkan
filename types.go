@@ -296,46 +296,39 @@ type InstanceCreateInfo struct {
 	Flags                   InstanceCreateFlags
 	PApplicationInfo        *ApplicationInfo
 	enabledLayerCount       uint32
-	ppEnabledLayerNames     []*C.char
+	ppEnabledLayerNames     **C.char
 	enabledExtensionCount   uint32
-	ppEnabledExtensionNames []*C.char
+	ppEnabledExtensionNames **C.char
 }
 
 func (s *InstanceCreateInfo) SetEnabledLayerNames(names []string) {
 	s.enabledLayerCount = uint32(len(names))
-	s.ppEnabledLayerNames = make([]*C.char, len(names))
-	for i := range s.ppEnabledLayerNames {
-		s.ppEnabledLayerNames[i] = C.CString(names[i])
+	strs := make([]*C.char, len(names))
+	for i := range names {
+		strs[i] = C.CString(names[i])
 	}
+	s.ppEnabledLayerNames = &strs[0]
 }
 
 func (s *InstanceCreateInfo) SetEnabledExtensionNames(names []string) {
 	s.enabledExtensionCount = uint32(len(names))
-	s.ppEnabledExtensionNames = make([]*C.char, len(names))
-	for i := range s.ppEnabledExtensionNames {
-		s.ppEnabledExtensionNames[i] = C.CString(names[i])
+	strs := make([]*C.char, len(names))
+	for i := range names {
+		strs[i] = C.CString(names[i])
 	}
+	s.ppEnabledExtensionNames = &strs[0]
 }
 
 func (s *InstanceCreateInfo) Free() {
-	for i := range s.ppEnabledLayerNames {
-		C.free(unsafe.Pointer(s.ppEnabledLayerNames[i]))
+	const stride = unsafe.Sizeof((*C.char)(nil))
+	for i := uintptr(0); i < stride * uintptr(s.enabledLayerCount); i += stride {
+		cPtr := (**C.char)(unsafe.Pointer(uintptr(unsafe.Pointer(s.ppEnabledLayerNames)) + i))
+		C.free(unsafe.Pointer(*cPtr))
 	}
-	for i := range s.ppEnabledExtensionNames {
-		C.free(unsafe.Pointer(s.ppEnabledExtensionNames[i]))
+	for i := uintptr(0); i < stride * uintptr(s.enabledExtensionCount); i += stride {
+		cPtr := (**C.char)(unsafe.Pointer(uintptr(unsafe.Pointer(s.ppEnabledExtensionNames)) + i))
+		C.free(unsafe.Pointer(*cPtr))
 	}
-}
-
-func (s *InstanceCreateInfo) cStruct(out *C.VkInstanceCreateInfo) {
-	a := *(*C.VkApplicationInfo)(unsafe.Pointer(s.PApplicationInfo))
-	out.sType =                   C.VkStructureType(s.SType)
-	out.pNext =                   s.PNext
-	out.flags =                   C.VkInstanceCreateFlags(s.Flags)
-	out.pApplicationInfo =        &a
-	out.enabledLayerCount =       C.uint32_t(s.enabledLayerCount)
-	out.ppEnabledLayerNames =     (**C.char)(unsafe.Pointer(&s.ppEnabledLayerNames[0]))
-	out.enabledExtensionCount =   C.uint32_t(s.enabledExtensionCount)
-	out.ppEnabledExtensionNames = (**C.char)(unsafe.Pointer(&s.ppEnabledExtensionNames[0]))
 }
 
 // AllocationCallbacks as declared in https://www.khronos.org/registry/vulkan/specs/1.0/man/html/VkAllocationCallbacks.html
@@ -601,48 +594,40 @@ type DeviceCreateInfo struct {
 	QueueCreateInfoCount    uint32
 	PQueueCreateInfos       *DeviceQueueCreateInfo
 	enabledLayerCount       uint32
-	ppEnabledLayerNames     []*C.char
+	ppEnabledLayerNames     **C.char
 	enabledExtensionCount   uint32
-	ppEnabledExtensionNames []*C.char
+	ppEnabledExtensionNames **C.char
 	PEnabledFeatures        *PhysicalDeviceFeatures
 }
 
 func (s *DeviceCreateInfo) SetEnabledLayerNames(names []string) {
 	s.enabledLayerCount = uint32(len(names))
-	s.ppEnabledLayerNames = make([]*C.char, len(names))
-	for i := range s.ppEnabledLayerNames {
-		s.ppEnabledLayerNames[i] = C.CString(names[i])
+	strs := make([]*C.char, len(names))
+	for i := range names {
+		strs[i] = C.CString(names[i])
 	}
+	s.ppEnabledLayerNames = &strs[0]
 }
 
 func (s *DeviceCreateInfo) SetEnabledExtensionNames(names []string) {
 	s.enabledExtensionCount = uint32(len(names))
-	s.ppEnabledExtensionNames = make([]*C.char, len(names))
-	for i := range s.ppEnabledExtensionNames {
-		s.ppEnabledExtensionNames[i] = C.CString(names[i])
+	strs := make([]*C.char, len(names))
+	for i := range names {
+		strs[i] = C.CString(names[i])
 	}
+	s.ppEnabledExtensionNames = &strs[0]
 }
 
 func (s *DeviceCreateInfo) Free() {
-	for i := range s.ppEnabledLayerNames {
-		C.free(unsafe.Pointer(s.ppEnabledLayerNames[i]))
+	const stride = unsafe.Sizeof((*C.char)(nil))
+	for i := uintptr(0); i < stride * uintptr(s.enabledLayerCount); i += stride {
+		cPtr := (**C.char)(unsafe.Pointer(uintptr(unsafe.Pointer(s.ppEnabledLayerNames)) + i))
+		C.free(unsafe.Pointer(*cPtr))
 	}
-	for i := range s.ppEnabledExtensionNames {
-		C.free(unsafe.Pointer(s.ppEnabledExtensionNames[i]))
+	for i := uintptr(0); i < stride * uintptr(s.enabledExtensionCount); i += stride {
+		cPtr := (**C.char)(unsafe.Pointer(uintptr(unsafe.Pointer(s.ppEnabledExtensionNames)) + i))
+		C.free(unsafe.Pointer(*cPtr))
 	}
-}
-
-func (s *DeviceCreateInfo) cStruct(out *C.VkDeviceCreateInfo) {
-	out.sType = C.VkStructureType(s.SType)
-	out.pNext = s.PNext
-	out.flags = C.VkDeviceCreateFlags(s.Flags)
-	out.queueCreateInfoCount = C.uint32_t(s.QueueCreateInfoCount)
-	out.pQueueCreateInfos = (*C.VkDeviceQueueCreateInfo)(unsafe.Pointer(s.PQueueCreateInfos))
-	out.enabledLayerCount = C.uint32_t(s.enabledLayerCount)
-	out.ppEnabledLayerNames = (**C.char)(unsafe.Pointer(&s.ppEnabledLayerNames[0]))
-	out.enabledExtensionCount = C.uint32_t(s.enabledExtensionCount)
-	out.ppEnabledExtensionNames = (**C.char)(unsafe.Pointer(&s.ppEnabledExtensionNames[0]))
-	out.pEnabledFeatures = (*C.VkPhysicalDeviceFeatures)(unsafe.Pointer(s.PEnabledFeatures))
 }
 
 // ExtensionProperties as declared in https://www.khronos.org/registry/vulkan/specs/1.0/man/html/VkExtensionProperties.html

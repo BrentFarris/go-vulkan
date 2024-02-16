@@ -179,14 +179,10 @@ import (
 
 // CreateInstance function as declared in https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkCreateInstance.html
 func CreateInstance(pCreateInfo *InstanceCreateInfo, pAllocator *AllocationCallbacks, pInstance *Instance) Result {
-	const sz = unsafe.Sizeof(C.VkInstanceCreateInfo{})
-	s := (*C.VkInstanceCreateInfo)(runtime.Malloc(sz))
-	pCreateInfo.cStruct(s)
 	res := C.callVkCreateInstance(
-		s,
+		(*C.VkInstanceCreateInfo)(unsafe.Pointer(pCreateInfo)),
 		(*C.VkAllocationCallbacks)(unsafe.Pointer(pAllocator)),
 		(*C.VkInstance)(unsafe.Pointer(pInstance)))
-	runtime.Free(unsafe.Pointer(s), sz)
 	return Result(res)
 }
 
@@ -258,15 +254,11 @@ func GetPhysicalDeviceMemoryProperties(physicalDevice PhysicalDevice, pMemoryPro
 
 // CreateDevice function as declared in https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkCreateDevice.html
 func CreateDevice(physicalDevice PhysicalDevice, pCreateInfo *DeviceCreateInfo, pAllocator *AllocationCallbacks, pDevice *Device) Result {
-	const sz = unsafe.Sizeof(C.VkDeviceCreateInfo{})
-	s := (*C.VkDeviceCreateInfo)(runtime.Malloc(sz))
-	pCreateInfo.cStruct(s)
 	res := C.callVkCreateDevice(
 		*(*C.VkPhysicalDevice)(unsafe.Pointer(&physicalDevice)),
-		s,
+		(*C.VkDeviceCreateInfo)(unsafe.Pointer(pCreateInfo)),
 		(*C.VkAllocationCallbacks)(unsafe.Pointer(pAllocator)),
 		(*C.VkDevice)(unsafe.Pointer(pDevice)))
-	runtime.Free(unsafe.Pointer(s), sz)
 	return Result(res)
 }
 
