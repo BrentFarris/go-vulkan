@@ -213,16 +213,17 @@ func GetDeviceQueue(device Device, queueFamilyIndex uint32, queueIndex uint32, p
 
 // QueueSubmit function as declared in https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkQueueSubmit.html
 func QueueSubmit(queue Queue, submitCount uint32, pSubmits *SubmitInfo, fence Fence) Result {
-	cqueue := *(*C.VkQueue)(unsafe.Pointer(&queue))
-	csubmitCount := (C.uint32_t)(submitCount)
-	cfence := *(*C.VkFence)(unsafe.Pointer(&fence))
-	__ret := C.callVkQueueSubmit(
-		cqueue,
-		csubmitCount,
-		(*C.VkSubmitInfo)(unsafe.Pointer(pSubmits)),
-		cfence)
-	__v := (Result)(__ret)
-	return __v
+	const sz = unsafe.Sizeof(C.VkSubmitInfo{})
+	s := (*C.VkSubmitInfo)(runtime.Malloc(sz))
+	// Hide from cgo pointer checks
+	*s = *(*C.VkSubmitInfo)(unsafe.Pointer(pSubmits))
+	res := C.callVkQueueSubmit(
+		*(*C.VkQueue)(unsafe.Pointer(&queue)),
+		(C.uint32_t)(submitCount),
+		s,
+		*(*C.VkFence)(unsafe.Pointer(&fence)))
+	runtime.Free(unsafe.Pointer(s), sz)
+	return Result(res)
 }
 
 // QueueWaitIdle function as declared in https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkQueueWaitIdle.html
@@ -665,16 +666,17 @@ func DestroyImageView(device Device, imageView ImageView, pAllocator *Allocation
 
 // CreateShaderModule function as declared in https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkCreateShaderModule.html
 func CreateShaderModule(device Device, pCreateInfo *ShaderModuleCreateInfo, pAllocator *AllocationCallbacks, pShaderModule *ShaderModule) Result {
-	cdevice := *(*C.VkDevice)(unsafe.Pointer(&device))
-	cpAllocator := (*C.VkAllocationCallbacks)(unsafe.Pointer(pAllocator))
-	cpShaderModule := (*C.VkShaderModule)(unsafe.Pointer(pShaderModule))
-	__ret := C.callVkCreateShaderModule(
-		cdevice,
-		(*C.VkShaderModuleCreateInfo)(unsafe.Pointer(pCreateInfo)),
-		cpAllocator,
-		cpShaderModule)
-	__v := (Result)(__ret)
-	return __v
+	const sz = unsafe.Sizeof(C.VkShaderModuleCreateInfo{})
+	s := (*C.VkShaderModuleCreateInfo)(runtime.Malloc(sz))
+	// Hide from cgo pointer checks
+	*s = *(*C.VkShaderModuleCreateInfo)(unsafe.Pointer(pCreateInfo))
+	res := C.callVkCreateShaderModule(
+		*(*C.VkDevice)(unsafe.Pointer(&device)),
+		s,
+		(*C.VkAllocationCallbacks)(unsafe.Pointer(pAllocator)),
+		(*C.VkShaderModule)(unsafe.Pointer(pShaderModule)))
+	runtime.Free(unsafe.Pointer(s), sz)
+	return Result(res)
 }
 
 // DestroyShaderModule function as declared in https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkDestroyShaderModule.html
@@ -775,16 +777,17 @@ func DestroyPipeline(device Device, pipeline Pipeline, pAllocator *AllocationCal
 
 // CreatePipelineLayout function as declared in https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkCreatePipelineLayout.html
 func CreatePipelineLayout(device Device, pCreateInfo *PipelineLayoutCreateInfo, pAllocator *AllocationCallbacks, pPipelineLayout *PipelineLayout) Result {
-	cdevice := *(*C.VkDevice)(unsafe.Pointer(&device))
-	cpAllocator := (*C.VkAllocationCallbacks)(unsafe.Pointer(pAllocator))
-	cpPipelineLayout := (*C.VkPipelineLayout)(unsafe.Pointer(pPipelineLayout))
-	__ret := C.callVkCreatePipelineLayout(
-		cdevice,
-		(*C.VkPipelineLayoutCreateInfo)(unsafe.Pointer(pCreateInfo)),
-		cpAllocator,
-		cpPipelineLayout)
-	__v := (Result)(__ret)
-	return __v
+	const sz = unsafe.Sizeof(C.VkPipelineLayoutCreateInfo{})
+	s := (*C.VkPipelineLayoutCreateInfo)(runtime.Malloc(sz))
+	// Hide from cgo pointer checks
+	*s = *(*C.VkPipelineLayoutCreateInfo)(unsafe.Pointer(pCreateInfo))
+	res := C.callVkCreatePipelineLayout(
+		*(*C.VkDevice)(unsafe.Pointer(&device)),
+		s,
+		(*C.VkAllocationCallbacks)(unsafe.Pointer(pAllocator)),
+		(*C.VkPipelineLayout)(unsafe.Pointer(pPipelineLayout)))
+	runtime.Free(unsafe.Pointer(s), sz)
+	return Result(res)
 }
 
 // DestroyPipelineLayout function as declared in https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkDestroyPipelineLayout.html
@@ -819,16 +822,17 @@ func DestroySampler(device Device, sampler Sampler, pAllocator *AllocationCallba
 
 // CreateDescriptorSetLayout function as declared in https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkCreateDescriptorSetLayout.html
 func CreateDescriptorSetLayout(device Device, pCreateInfo *DescriptorSetLayoutCreateInfo, pAllocator *AllocationCallbacks, pSetLayout *DescriptorSetLayout) Result {
-	cdevice := *(*C.VkDevice)(unsafe.Pointer(&device))
-	cpAllocator := (*C.VkAllocationCallbacks)(unsafe.Pointer(pAllocator))
-	cpSetLayout := (*C.VkDescriptorSetLayout)(unsafe.Pointer(pSetLayout))
-	__ret := C.callVkCreateDescriptorSetLayout(
-		cdevice,
-		(*C.VkDescriptorSetLayoutCreateInfo)(unsafe.Pointer(pCreateInfo)),
-		cpAllocator,
-		cpSetLayout)
-	__v := (Result)(__ret)
-	return __v
+	const sz = unsafe.Sizeof(C.VkDescriptorSetLayoutCreateInfo{})
+	s := (*C.VkDescriptorSetLayoutCreateInfo)(runtime.Malloc(sz))
+	// Hide from cgo pointer checks
+	*s = *(*C.VkDescriptorSetLayoutCreateInfo)(unsafe.Pointer(pCreateInfo))
+	res := C.callVkCreateDescriptorSetLayout(
+		*(*C.VkDevice)(unsafe.Pointer(&device)),
+		s,
+		(*C.VkAllocationCallbacks)(unsafe.Pointer(pAllocator)),
+		(*C.VkDescriptorSetLayout)(unsafe.Pointer(pSetLayout)))
+	runtime.Free(unsafe.Pointer(s), sz)
+	return Result(res)
 }
 
 // DestroyDescriptorSetLayout function as declared in https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkDestroyDescriptorSetLayout.html
@@ -841,16 +845,17 @@ func DestroyDescriptorSetLayout(device Device, descriptorSetLayout DescriptorSet
 
 // CreateDescriptorPool function as declared in https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkCreateDescriptorPool.html
 func CreateDescriptorPool(device Device, pCreateInfo *DescriptorPoolCreateInfo, pAllocator *AllocationCallbacks, pDescriptorPool *DescriptorPool) Result {
-	cdevice := *(*C.VkDevice)(unsafe.Pointer(&device))
-	cpAllocator := (*C.VkAllocationCallbacks)(unsafe.Pointer(pAllocator))
-	cpDescriptorPool := (*C.VkDescriptorPool)(unsafe.Pointer(pDescriptorPool))
-	__ret := C.callVkCreateDescriptorPool(
-		cdevice,
-		(*C.VkDescriptorPoolCreateInfo)(unsafe.Pointer(pCreateInfo)),
-		cpAllocator,
-		cpDescriptorPool)
-	__v := (Result)(__ret)
-	return __v
+	const sz = unsafe.Sizeof(C.VkDescriptorPoolCreateInfo{})
+	s := (*C.VkDescriptorPoolCreateInfo)(runtime.Malloc(sz))
+	// Hide from cgo pointer checks
+	*s = *(*C.VkDescriptorPoolCreateInfo)(unsafe.Pointer(pCreateInfo))
+	res := C.callVkCreateDescriptorPool(
+		*(*C.VkDevice)(unsafe.Pointer(&device)),
+		s,
+		(*C.VkAllocationCallbacks)(unsafe.Pointer(pAllocator)),
+		(*C.VkDescriptorPool)(unsafe.Pointer(pDescriptorPool)))
+	runtime.Free(unsafe.Pointer(s), sz)
+	return Result(res)
 }
 
 // DestroyDescriptorPool function as declared in https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkDestroyDescriptorPool.html
@@ -873,14 +878,16 @@ func ResetDescriptorPool(device Device, descriptorPool DescriptorPool, flags Des
 
 // AllocateDescriptorSets function as declared in https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkAllocateDescriptorSets.html
 func AllocateDescriptorSets(device Device, pAllocateInfo *DescriptorSetAllocateInfo, pDescriptorSets *DescriptorSet) Result {
-	cdevice := *(*C.VkDevice)(unsafe.Pointer(&device))
-	cpDescriptorSets := (*C.VkDescriptorSet)(unsafe.Pointer(pDescriptorSets))
-	__ret := C.callVkAllocateDescriptorSets(
-		cdevice,
-		(*C.VkDescriptorSetAllocateInfo)(unsafe.Pointer(pAllocateInfo)),
-		cpDescriptorSets)
-	__v := (Result)(__ret)
-	return __v
+	const sz = unsafe.Sizeof(C.VkDescriptorSetAllocateInfo{})
+	s := (*C.VkDescriptorSetAllocateInfo)(runtime.Malloc(sz))
+	// Hide from cgo pointer checks
+	*s = *(*C.VkDescriptorSetAllocateInfo)(unsafe.Pointer(pAllocateInfo))
+	res := C.callVkAllocateDescriptorSets(
+		*(*C.VkDevice)(unsafe.Pointer(&device)),
+		s,
+		(*C.VkDescriptorSet)(unsafe.Pointer(pDescriptorSets)))
+	runtime.Free(unsafe.Pointer(s), sz)
+	return Result(res)
 }
 
 // FreeDescriptorSets function as declared in https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkFreeDescriptorSets.html
@@ -896,29 +903,36 @@ func FreeDescriptorSets(device Device, descriptorPool DescriptorPool, descriptor
 
 // UpdateDescriptorSets function as declared in https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkUpdateDescriptorSets.html
 func UpdateDescriptorSets(device Device, descriptorWriteCount uint32, pDescriptorWrites *WriteDescriptorSet, descriptorCopyCount uint32, pDescriptorCopies *CopyDescriptorSet) {
-	cdevice := *(*C.VkDevice)(unsafe.Pointer(&device))
-	cdescriptorWriteCount := (C.uint32_t)(descriptorWriteCount)
-	cdescriptorCopyCount := (C.uint32_t)(descriptorCopyCount)
+	const sz = unsafe.Sizeof(C.VkWriteDescriptorSet{})
+	size := uintptr(uint32(sz) * descriptorWriteCount)
+	s := (*C.VkWriteDescriptorSet)(runtime.Malloc(size))
+	src := unsafe.Pointer(pDescriptorWrites)
+	dst := unsafe.Pointer(s)
+	copy(unsafe.Slice((*byte)(dst), size), unsafe.Slice((*byte)(src), size))
+	// Hide from cgo pointer checks
+	*s = *(*C.VkWriteDescriptorSet)(unsafe.Pointer(pDescriptorWrites))
 	C.callVkUpdateDescriptorSets(
-		cdevice,
-		cdescriptorWriteCount,
-		(*C.VkWriteDescriptorSet)(unsafe.Pointer(pDescriptorWrites)),
-		cdescriptorCopyCount,
+		*(*C.VkDevice)(unsafe.Pointer(&device)),
+		(C.uint32_t)(descriptorWriteCount),
+		s,
+		(C.uint32_t)(descriptorCopyCount),
 		(*C.VkCopyDescriptorSet)(unsafe.Pointer(pDescriptorCopies)))
+	runtime.Free(unsafe.Pointer(s), size)
 }
 
 // CreateFramebuffer function as declared in https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkCreateFramebuffer.html
 func CreateFramebuffer(device Device, pCreateInfo *FramebufferCreateInfo, pAllocator *AllocationCallbacks, pFramebuffer *Framebuffer) Result {
-	cdevice := *(*C.VkDevice)(unsafe.Pointer(&device))
-	cpAllocator := (*C.VkAllocationCallbacks)(unsafe.Pointer(pAllocator))
-	cpFramebuffer := (*C.VkFramebuffer)(unsafe.Pointer(pFramebuffer))
-	__ret := C.callVkCreateFramebuffer(
-		cdevice,
-		(*C.VkFramebufferCreateInfo)(unsafe.Pointer(pCreateInfo)),
-		cpAllocator,
-		cpFramebuffer)
-	__v := (Result)(__ret)
-	return __v
+	const sz = unsafe.Sizeof(C.VkFramebufferCreateInfo{})
+	s := (*C.VkFramebufferCreateInfo)(runtime.Malloc(sz))
+	// Hide from cgo pointer checks
+	*s = *(*C.VkFramebufferCreateInfo)(unsafe.Pointer(pCreateInfo))
+	res := C.callVkCreateFramebuffer(
+		*(*C.VkDevice)(unsafe.Pointer(&device)),
+		s,
+		(*C.VkAllocationCallbacks)(unsafe.Pointer(pAllocator)),
+		(*C.VkFramebuffer)(unsafe.Pointer(pFramebuffer)))
+	runtime.Free(unsafe.Pointer(s), sz)
+	return Result(res)
 }
 
 // DestroyFramebuffer function as declared in https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkDestroyFramebuffer.html
@@ -931,7 +945,7 @@ func DestroyFramebuffer(device Device, framebuffer Framebuffer, pAllocator *Allo
 
 // CreateRenderPass function as declared in https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkCreateRenderPass.html
 func CreateRenderPass(device Device, pCreateInfo *RenderPassCreateInfo, pAllocator *AllocationCallbacks, pRenderPass *RenderPass) Result {
-	const sz = unsafe.Sizeof(RenderPassCreateInfo{})
+	const sz = unsafe.Sizeof(C.VkRenderPassCreateInfo{})
 	s := (*C.VkRenderPassCreateInfo)(runtime.Malloc(sz))
 	// Hide from cgo pointer checks
 	*s = *(*C.VkRenderPassCreateInfo)(unsafe.Pointer(pCreateInfo))
