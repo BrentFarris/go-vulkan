@@ -172,10 +172,7 @@ package vulkan
 #include <stdlib.h>
 */
 import "C"
-import (
-	"runtime"
-	"unsafe"
-)
+import "unsafe"
 
 // CreateInstance function as declared in https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkCreateInstance.html
 func CreateInstance(pCreateInfo *InstanceCreateInfo, pAllocator *AllocationCallbacks, pInstance *Instance) Result {
